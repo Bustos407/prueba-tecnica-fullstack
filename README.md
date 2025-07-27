@@ -2,6 +2,12 @@
 
 > **Aplicación web completa** para gestionar ingresos, gastos y reportes financieros con autenticación y control de roles.
 
+## 🌐 **Aplicación Desplegada**
+
+**URL de Producción:** [https://prueba-tecnica-fullstack-bice.vercel.app](https://prueba-tecnica-fullstack-bice.vercel.app)
+
+> **¡La aplicación está completamente funcional en producción!**
+
 ## Características Principales
 
 ### Gestión Financiera
@@ -26,10 +32,17 @@
 - **Swagger/OpenAPI** para documentación
 - **Jest** para testing
 
+### Funcionalidades Avanzadas
+
+- **Mensajes de error informativos:** Información clara sobre problemas de BD
+- **CORS configurado:** Para requests desde Vercel
+- **Variables de entorno optimizadas:** Para producción
+
 ---
 
 ## Tabla de Contenidos
 
+- [Aplicación Desplegada](#aplicación-desplegada)
 - [Características Principales](#características-principales)
 - [Instalación Rápida](#instalación-rápida)
 - [Configuración Detallada](#configuración-detallada)
@@ -38,6 +51,7 @@
 - [Roles y Permisos](#roles-y-permisos)
 - [Testing](#testing)
 - [API Documentation](#api-documentation)
+- [Solución de Problemas](#solución-de-problemas)
 
 ---
 
@@ -64,12 +78,14 @@ Crear archivo `.env.local`:
 # Base de datos (Supabase)
 DATABASE_URL="postgresql://usuario:password@host:puerto/database"
 
+
 # GitHub OAuth
 GITHUB_CLIENT_ID="tu-github-client-id"
 GITHUB_CLIENT_SECRET="tu-github-client-secret"
 
 # URL base
 NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+NEXT_PUBLIC_BETTER_AUTH_URL="http://localhost:3000/api/auth"
 ```
 
 ### 4. Configurar base de datos
@@ -138,36 +154,50 @@ npm run db:seed       # Agregar datos de ejemplo
 
 ## Despliegue en Vercel
 
-### 1. Preparar el proyecto
+### ✅ **Aplicación Desplegada**
 
-```bash
-# Verificar que el build funciona
-npm run build
+**URL:** [https://prueba-tecnica-fullstack-bice.vercel.app](https://prueba-tecnica-fullstack-bice.vercel.app)
+
+### Configuración de Producción
+
+#### Variables de Entorno en Vercel
+
+Configura las siguientes variables en tu proyecto de Vercel:
+
+```env
+# Base de datos
+DATABASE_URL="tu-database-url"
+
+# GitHub OAuth
+GITHUB_CLIENT_ID="tu-github-client-id"
+GITHUB_CLIENT_SECRET="tu-github-client-secret"
+BETTER_AUTH_SECRET="tu-secret-super-seguro"
+
+# URLs de producción
+NEXT_PUBLIC_BASE_URL="https://tu-app.vercel.app"
+NEXT_PUBLIC_BETTER_AUTH_URL="https://tu-app.vercel.app/api/auth"
 ```
 
-### 2. Conectar con Vercel
+#### Configuración de GitHub OAuth para Producción
 
-1. Ve a [Vercel](https://vercel.com) y conecta tu repositorio de GitHub
-2. Configura las **variables de entorno** en Vercel:
-   ```
-   DATABASE_URL=tu-url-de-supabase
-   GITHUB_CLIENT_ID=tu-github-client-id
-   GITHUB_CLIENT_SECRET=tu-github-client-secret
-   NEXT_PUBLIC_BASE_URL=https://tu-dominio.vercel.app
-   ```
+1. Ve a tu aplicación OAuth en GitHub
+2. Configura:
+   - **Homepage URL:** `https://prueba-tecnica-fullstack-bice.vercel.app`
+   - **Authorization callback URL:** `https://prueba-tecnica-fullstack-bice.vercel.app/api/auth/callback/github`
 
-### 3. Desplegar
+### Proceso de Despliegue
 
-```bash
-# Con Vercel CLI
-npm i -g vercel
-vercel --prod
+1. **Conectar repositorio** a Vercel
+2. **Configurar variables de entorno** (ver arriba)
+3. **Hacer push** a la rama main
+4. **Vercel despliega automáticamente**
 
-# O desde GitHub (automático)
-# Solo haz push a main/master
-```
+### Características del Despliegue
 
-**¡Tu app estará disponible en `https://tu-dominio.vercel.app`!**
+- ✅ **Build automático** con `prisma generate`
+- ✅ **CORS configurado** para requests desde Vercel
+- ✅ **Variables de entorno** optimizadas
+- ✅ **Mensajes de error informativos**
 
 ---
 
@@ -189,7 +219,10 @@ prueba-tecnica-fullstack/
 ├── prisma/
 │   └── schema.prisma        # Esquema de base de datos
 ├── lib/
-│   └── auth/                # Configuración Better Auth
+│   ├── auth/                # Configuración Better Auth
+│   ├── cors.ts              # Middleware CORS
+│   └── db-health-check.ts   # Salud de base de datos
+
 ├── __tests__/               # Pruebas unitarias
 ├── components/              # Componentes UI
 └── styles/                  # Estilos globales
@@ -308,23 +341,14 @@ GET    /api/reports/csv      # Descargar CSV
 - Validación de datos en frontend y backend
 - Middleware de protección de rutas
 
----
+### Gestión de Errores
 
-## Estado del Proyecto
-
-### COMPLETADO (100%)
-
-- Base de datos PostgreSQL configurada
-- Autenticación con GitHub funcionando
-- CRUD completo para transacciones y usuarios
-- Sistema de roles implementado
-- Reportes y gráficos funcionando
-- Documentación API completa
-- Pruebas unitarias (47 tests)
-- Diseño responsive con Tailwind
-- Despliegue en Vercel listo
+- **Mensajes informativos:** Errores 500 con contexto
+- **CORS configurado:** Para requests desde Vercel
+- **Variables de entorno:** Optimizadas para producción
 
 ---
+
 
 ## Solución de Problemas
 
@@ -336,6 +360,8 @@ npx prisma generate
 
 # Sincronizar esquema
 npx prisma db push
+
+
 ```
 
 ### Error de autenticación
@@ -352,31 +378,13 @@ rm -rf .next
 npm run build
 ```
 
----
+### Error 500 con mensaje informativo
 
-## Soporte
+Si ves el mensaje:
+```
+"Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos"
+```
 
-- **Repositorio:** [https://github.com/Bustos407/prueba-tecnica-fullstack](https://github.com/Bustos407/prueba-tecnica-fullstack)
-- **Issues:** [GitHub Issues](https://github.com/Bustos407/prueba-tecnica-fullstack/issues)
-- **Documentación:** `/api/docs` en tu aplicación
-- **Email:** soporte@ejemplo.com
-
----
-
-## Licencia
-
-Este proyecto está bajo la **Licencia MIT**. Ver el archivo `LICENSE` para más detalles.
+**Solución:** Si hay problemas de conexión con la base de datos, es mejor reiniciar la BD directamente en el dashboard de Supabase.
 
 ---
-
-## Agradecimientos
-
-- **Next.js** por el framework
-- **Vercel** por el hosting
-- **Supabase** por la base de datos
-- **Tailwind CSS** por los estilos
-- **Better Auth** por la autenticación
-
----
-
-**¡Si te gusta este proyecto, dale una estrella en [GitHub](https://github.com/Bustos407/prueba-tecnica-fullstack)!**
