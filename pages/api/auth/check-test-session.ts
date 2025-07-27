@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
+import { withCors } from '@/lib/cors';
 
 const prisma = new PrismaClient();
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -70,3 +71,5 @@ export default async function handler(
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
 }
+
+export default withCors(handler);

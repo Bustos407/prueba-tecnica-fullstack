@@ -1,6 +1,7 @@
 import { NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { withAuth, AuthenticatedRequest } from '@/lib/auth/middleware';
+import { withCors } from '@/lib/cors';
 
 const prisma = new PrismaClient();
 
@@ -257,4 +258,4 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   }
 };
 
-export default withAuth(handler, 'ADMIN');
+export default withCors(withAuth(handler, 'ADMIN'));
