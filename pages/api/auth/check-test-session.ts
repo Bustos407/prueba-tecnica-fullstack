@@ -4,10 +4,7 @@ import { withCors } from '@/lib/cors';
 
 const prisma = new PrismaClient();
 
-async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Método no permitido' });
   }
@@ -70,6 +67,6 @@ async function handler(
   } catch {
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
-}
+};
 
 export default withCors(handler);
