@@ -1,18 +1,23 @@
-
 describe('Cálculos financieros', () => {
-  const calculateTotalIncome = (transactions: Array<{ amount: number; type: string }>) => {
+  const calculateTotalIncome = (
+    transactions: Array<{ amount: number; type: string }>
+  ) => {
     return transactions
-      .filter(t => t.type === 'INCOME')
+      .filter((t) => t.type === 'INCOME')
       .reduce((sum, t) => sum + t.amount, 0);
   };
 
-  const calculateTotalExpenses = (transactions: Array<{ amount: number; type: string }>) => {
+  const calculateTotalExpenses = (
+    transactions: Array<{ amount: number; type: string }>
+  ) => {
     return transactions
-      .filter(t => t.type === 'EXPENSE')
+      .filter((t) => t.type === 'EXPENSE')
       .reduce((sum, t) => sum + t.amount, 0);
   };
 
-  const calculateBalance = (transactions: Array<{ amount: number; type: string }>) => {
+  const calculateBalance = (
+    transactions: Array<{ amount: number; type: string }>
+  ) => {
     const income = calculateTotalIncome(transactions);
     const expenses = calculateTotalExpenses(transactions);
     return income - expenses;
@@ -27,7 +32,7 @@ describe('Cálculos financieros', () => {
     const transactions = [
       { amount: 1000, type: 'INCOME' },
       { amount: 500, type: 'INCOME' },
-      { amount: 300, type: 'EXPENSE' }
+      { amount: 300, type: 'EXPENSE' },
     ];
 
     expect(calculateTotalIncome(transactions)).toBe(1500);
@@ -37,7 +42,7 @@ describe('Cálculos financieros', () => {
     const transactions = [
       { amount: 1000, type: 'INCOME' },
       { amount: 300, type: 'EXPENSE' },
-      { amount: 200, type: 'EXPENSE' }
+      { amount: 200, type: 'EXPENSE' },
     ];
 
     expect(calculateTotalExpenses(transactions)).toBe(500);
@@ -48,7 +53,7 @@ describe('Cálculos financieros', () => {
       { amount: 1000, type: 'INCOME' },
       { amount: 300, type: 'EXPENSE' },
       { amount: 500, type: 'INCOME' },
-      { amount: 200, type: 'EXPENSE' }
+      { amount: 200, type: 'EXPENSE' },
     ];
 
     expect(calculateBalance(transactions)).toBe(1000);
@@ -63,26 +68,35 @@ describe('Cálculos financieros', () => {
 });
 
 describe('Filtrado y búsqueda', () => {
-  const filterTransactionsByType = (transactions: Array<{ type: string; amount: number; concept: string }>, type: string) => {
-    return transactions.filter(t => t.type === type);
+  const filterTransactionsByType = (
+    transactions: Array<{ type: string; amount: number; concept: string }>,
+    type: string
+  ) => {
+    return transactions.filter((t) => t.type === type);
   };
 
-  const searchTransactionsByConcept = (transactions: Array<{ concept: string; amount: number; type: string }>, searchTerm: string) => {
+  const searchTransactionsByConcept = (
+    transactions: Array<{ concept: string; amount: number; type: string }>,
+    searchTerm: string
+  ) => {
     const term = searchTerm.toLowerCase();
-    return transactions.filter(t => 
-      t.concept.toLowerCase().includes(term)
-    );
+    return transactions.filter((t) => t.concept.toLowerCase().includes(term));
   };
 
   const filterTransactionsByDateRange = (
-    transactions: Array<{ date: string; amount: number; type: string; concept: string }>,
+    transactions: Array<{
+      date: string;
+      amount: number;
+      type: string;
+      concept: string;
+    }>,
     startDate: string,
     endDate: string
   ) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
-    return transactions.filter(t => {
+
+    return transactions.filter((t) => {
       const transactionDate = new Date(t.date);
       return transactionDate >= start && transactionDate <= end;
     });
@@ -92,7 +106,7 @@ describe('Filtrado y búsqueda', () => {
     const transactions = [
       { type: 'INCOME', amount: 1000, concept: 'Salario' },
       { type: 'EXPENSE', amount: 300, concept: 'Comida' },
-      { type: 'INCOME', amount: 500, concept: 'Bonus' }
+      { type: 'INCOME', amount: 500, concept: 'Bonus' },
     ];
 
     const incomeTransactions = filterTransactionsByType(transactions, 'INCOME');
@@ -105,7 +119,7 @@ describe('Filtrado y búsqueda', () => {
     const transactions = [
       { concept: 'Salario mensual', amount: 1000, type: 'INCOME' },
       { concept: 'Comida del día', amount: 300, type: 'EXPENSE' },
-      { concept: 'Salario extra', amount: 500, type: 'INCOME' }
+      { concept: 'Salario extra', amount: 500, type: 'INCOME' },
     ];
 
     const salarioResults = searchTransactionsByConcept(transactions, 'salario');
@@ -118,10 +132,14 @@ describe('Filtrado y búsqueda', () => {
     const transactions = [
       { date: '2024-01-15', amount: 1000, type: 'INCOME', concept: 'Salario' },
       { date: '2024-01-20', amount: 300, type: 'EXPENSE', concept: 'Comida' },
-      { date: '2024-02-01', amount: 500, type: 'INCOME', concept: 'Bonus' }
+      { date: '2024-02-01', amount: 500, type: 'INCOME', concept: 'Bonus' },
     ];
 
-    const filtered = filterTransactionsByDateRange(transactions, '2024-01-10', '2024-01-25');
+    const filtered = filterTransactionsByDateRange(
+      transactions,
+      '2024-01-10',
+      '2024-01-25'
+    );
     expect(filtered).toHaveLength(2);
     expect(filtered[0].concept).toBe('Salario');
     expect(filtered[1].concept).toBe('Comida');
@@ -134,12 +152,12 @@ describe('Validación de reglas de negocio', () => {
     if (userEmail === 'test-user@example.com') {
       return false;
     }
-    
+
     // Solo los ADMIN pueden eliminar usuarios
     if (currentUserRole !== 'ADMIN') {
       return false;
     }
-    
+
     return true;
   };
 
@@ -181,4 +199,4 @@ describe('Validación de reglas de negocio', () => {
     expect(validateTransactionAmount(5000, 'USER')).toBe(true);
     expect(validateTransactionAmount(15000, 'USER')).toBe(false);
   });
-}); 
+});

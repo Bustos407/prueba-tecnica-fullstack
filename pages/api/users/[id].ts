@@ -38,7 +38,7 @@ const handlePut = async (
 
     // Verificar si el usuario existe
     const existingUser = await prisma.user.findUnique({
-      where: { id: String(id) }
+      where: { id: String(id) },
     });
 
     if (!existingUser) {
@@ -48,11 +48,13 @@ const handlePut = async (
     // Verificar si el email ya existe en otro usuario
     if (email && email !== existingUser.email) {
       const userWithEmail = await prisma.user.findUnique({
-        where: { email: email.toLowerCase() }
+        where: { email: email.toLowerCase() },
       });
 
       if (userWithEmail) {
-        return res.status(400).json({ error: 'El email ya está registrado por otro usuario' });
+        return res
+          .status(400)
+          .json({ error: 'El email ya está registrado por otro usuario' });
       }
     }
 
@@ -70,12 +72,11 @@ const handlePut = async (
         email: true,
         role: true,
         createdAt: true,
-      }
+      },
     });
 
     res.status(200).json(updatedUser);
-  } catch (error: unknown) {
-    console.error('Error updating user:', error);
+  } catch {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
@@ -137,10 +138,7 @@ const handlePut = async (
  *       500:
  *         description: Error interno del servidor
  */
-async function handler(
-  req: AuthenticatedRequest,
-  res: NextApiResponse
-) {
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   const { id } = req.query;
 
   if (req.method === 'PUT') {
@@ -149,6 +147,6 @@ async function handler(
     res.setHeader('Allow', ['PUT']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+};
 
 export default withAuth(handler, 'ADMIN');

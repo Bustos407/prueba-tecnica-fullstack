@@ -6,7 +6,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  phone: string;
+  phone?: string;
   role: 'USER' | 'ADMIN';
 }
 
@@ -35,10 +35,10 @@ const UsersPage = () => {
         const data = await response.json();
         setUsers(data);
       } else {
-        console.error('Error fetching users');
+        // Error fetching users
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
+      // Error handling
     } finally {
       setIsLoading(false);
     }
@@ -110,8 +110,8 @@ const UsersPage = () => {
           alert(`Error: ${error.error}`);
         }
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
+      // Error handling
       alert('Error al procesar la solicitud');
     } finally {
       setIsSubmitting(false);
@@ -125,7 +125,9 @@ const UsersPage = () => {
       return;
     }
 
-    if (!confirm(`¿Estás seguro de que quieres eliminar al usuario ${userEmail}?`)) {
+    if (
+      !confirm(`¿Estás seguro de que quieres eliminar al usuario ${userEmail}?`)
+    ) {
       return;
     }
 
@@ -145,8 +147,8 @@ const UsersPage = () => {
         const error = await response.json();
         alert(`Error: ${error.error}`);
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
+      // Error handling
       alert('Error al eliminar el usuario');
     }
   };
@@ -262,9 +264,7 @@ const UsersPage = () => {
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                     CORREO
                   </th>
-                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                    TELÉFONO
-                  </th>
+
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                     ROL
                   </th>
@@ -277,7 +277,7 @@ const UsersPage = () => {
                 {users.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={4}
                       className='px-6 py-4 text-center text-gray-500'
                     >
                       No hay usuarios registrados
@@ -292,9 +292,7 @@ const UsersPage = () => {
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                         {user.email}
                       </td>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                        {user.phone || 'N/A'}
-                      </td>
+
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <span
                           className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

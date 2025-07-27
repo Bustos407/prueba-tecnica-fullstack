@@ -5,18 +5,21 @@
 ## Características Principales
 
 ### Gestión Financiera
+
 - **Transacciones:** Crear, editar, eliminar ingresos y gastos
 - **Balance automático:** Cálculo en tiempo real de saldos
 - **Reportes:** Gráficos y exportación a CSV
 - **Gestión de usuarios:** CRUD completo con roles
 
 ### Seguridad y Autenticación
+
 - **GitHub OAuth:** Login seguro con GitHub
 - **Sistema de roles:** USER y ADMIN con permisos específicos
 - **Protección de rutas:** Middleware de autenticación
 - **Validación de datos:** En frontend y backend
 
 ### Tecnologías Modernas
+
 - **Next.js 15** con TypeScript
 - **Tailwind CSS** para UI moderna
 - **PostgreSQL** con Prisma ORM
@@ -41,18 +44,22 @@
 ## Instalación Rápida
 
 ### 1. Clonar el repositorio
+
 ```bash
-git clone <tu-repositorio>
+git clone https://github.com/Bustos407/prueba-tecnica-fullstack.git
 cd prueba-tecnica-fullstack
 ```
 
 ### 2. Instalar dependencias
+
 ```bash
 npm install
 ```
 
 ### 3. Configurar variables de entorno
+
 Crear archivo `.env.local`:
+
 ```env
 # Base de datos (Supabase)
 DATABASE_URL="postgresql://usuario:password@host:puerto/database"
@@ -66,6 +73,7 @@ NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 ```
 
 ### 4. Configurar base de datos
+
 ```bash
 # Generar cliente Prisma
 npx prisma generate
@@ -78,6 +86,7 @@ npm run db:seed
 ```
 
 ### 5. Ejecutar el proyecto
+
 ```bash
 npm run dev
 ```
@@ -130,6 +139,7 @@ npm run db:seed       # Agregar datos de ejemplo
 ## Despliegue en Vercel
 
 ### 1. Preparar el proyecto
+
 ```bash
 # Verificar que el build funciona
 npm run build
@@ -147,6 +157,7 @@ npm run build
    ```
 
 ### 3. Desplegar
+
 ```bash
 # Con Vercel CLI
 npm i -g vercel
@@ -189,6 +200,7 @@ prueba-tecnica-fullstack/
 ## Roles y Permisos
 
 ### ADMIN
+
 - Crear, editar, eliminar transacciones
 - Gestionar usuarios (crear, editar, eliminar)
 - Ver reportes y gráficos
@@ -196,6 +208,7 @@ prueba-tecnica-fullstack/
 - Acceso a documentación API
 
 ### USER
+
 - Ver transacciones
 - No puede crear/editar transacciones
 - No puede gestionar usuarios
@@ -207,6 +220,7 @@ prueba-tecnica-fullstack/
 ## Testing
 
 ### Ejecutar pruebas
+
 ```bash
 # Todas las pruebas
 npm test
@@ -219,6 +233,7 @@ npm test -- --coverage
 ```
 
 ### Pruebas incluidas
+
 - **47 pruebas unitarias** ejecutándose
 - Validación de datos
 - Autenticación y autorización
@@ -230,6 +245,7 @@ npm test -- --coverage
 ## API Documentation
 
 ### Acceso a la documentación
+
 - **URL:** `/api/docs` (Swagger UI)
 - **Especificación:** OpenAPI 3.0
 - **Testing:** Interactivo desde la interfaz
@@ -237,6 +253,7 @@ npm test -- --coverage
 ### Endpoints principales
 
 #### Transacciones
+
 ```
 GET    /api/transactions     # Obtener todas
 POST   /api/transactions     # Crear nueva
@@ -245,6 +262,7 @@ DELETE /api/transactions/[id] # Eliminar
 ```
 
 #### Usuarios
+
 ```
 GET    /api/users            # Obtener todos
 POST   /api/users            # Crear nuevo
@@ -253,6 +271,7 @@ DELETE /api/users            # Eliminar
 ```
 
 #### Reportes
+
 ```
 GET    /api/reports/csv      # Descargar CSV
 ```
@@ -262,24 +281,28 @@ GET    /api/reports/csv      # Descargar CSV
 ## Funcionalidades Destacadas
 
 ### Gestión de Transacciones
+
 - Formulario intuitivo para agregar ingresos/gastos
 - Tabla con filtros y ordenamiento
 - Cálculo automático de balance
 - Botones de editar/eliminar (solo ADMIN)
 
 ### Gestión de Usuarios
+
 - Lista completa de usuarios
 - Crear nuevos usuarios
 - Editar roles y información
 - Protección del usuario de pruebas
 
 ### Reportes Financieros
+
 - Gráficos de ingresos vs gastos
 - Balance actual en tiempo real
 - Exportación a CSV
 - Visualización moderna con Tailwind
 
 ### Seguridad
+
 - Autenticación con GitHub OAuth
 - Control de acceso basado en roles
 - Validación de datos en frontend y backend
@@ -290,6 +313,7 @@ GET    /api/reports/csv      # Descargar CSV
 ## Estado del Proyecto
 
 ### COMPLETADO (100%)
+
 - Base de datos PostgreSQL configurada
 - Autenticación con GitHub funcionando
 - CRUD completo para transacciones y usuarios
@@ -305,6 +329,7 @@ GET    /api/reports/csv      # Descargar CSV
 ## Solución de Problemas
 
 ### Error de base de datos
+
 ```bash
 # Regenerar cliente Prisma
 npx prisma generate
@@ -314,11 +339,13 @@ npx prisma db push
 ```
 
 ### Error de autenticación
+
 - Verificar variables de entorno
 - Confirmar configuración de GitHub OAuth
 - Revisar URLs de callback
 
 ### Error de build
+
 ```bash
 # Limpiar cache
 rm -rf .next
@@ -329,7 +356,8 @@ npm run build
 
 ## Soporte
 
-- **Issues:** [GitHub Issues](https://github.com/tu-usuario/tu-repo/issues)
+- **Repositorio:** [https://github.com/Bustos407/prueba-tecnica-fullstack](https://github.com/Bustos407/prueba-tecnica-fullstack)
+- **Issues:** [GitHub Issues](https://github.com/Bustos407/prueba-tecnica-fullstack/issues)
 - **Documentación:** `/api/docs` en tu aplicación
 - **Email:** soporte@ejemplo.com
 
@@ -351,4 +379,4 @@ Este proyecto está bajo la **Licencia MIT**. Ver el archivo `LICENSE` para más
 
 ---
 
-**¡Si te gusta este proyecto, dale una estrella en GitHub!**
+**¡Si te gusta este proyecto, dale una estrella en [GitHub](https://github.com/Bustos407/prueba-tecnica-fullstack)!**

@@ -87,8 +87,7 @@ const handleGet = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     });
 
     res.status(200).json(transactions);
-  } catch (error) {
-    console.error('Error al obtener transacciones:', error);
+  } catch {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
@@ -150,25 +149,22 @@ const handlePost = async (
     });
 
     res.status(201).json(transaction);
-  } catch (error) {
-    console.error('Error al crear transacción:', error);
+  } catch {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
 
-async function handler(
-  req: AuthenticatedRequest,
-  res: NextApiResponse
-) {
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     await handleGet(req, res);
   } else if (req.method === 'POST') {
     // Solo los ADMIN pueden crear transacciones
     if (req.user?.role !== 'ADMIN') {
-      return res.status(403).json({ 
-        error: 'Acceso denegado. Solo los administradores pueden crear transacciones.',
+      return res.status(403).json({
+        error:
+          'Acceso denegado. Solo los administradores pueden crear transacciones.',
         userRole: req.user?.role,
-        requiredRole: 'ADMIN'
+        requiredRole: 'ADMIN',
       });
     }
     await handlePost(req, res, req.user!.id);
@@ -176,7 +172,7 @@ async function handler(
     res.setHeader('Allow', ['GET', 'POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+};
 
 // Usar withAuth normal para mantener las verificaciones de rol
 export default withAuth(handler);

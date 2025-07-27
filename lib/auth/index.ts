@@ -15,21 +15,24 @@ export const auth = betterAuth({
       type: 'credentials',
       credentials: {
         email: { label: 'Email', type: 'text' },
-        password: { label: 'Password', type: 'password' }
+        password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials: Record<string, string | undefined>) => {
-        if (credentials?.email === 'test-user@example.com' && credentials?.password === 'test-password') {
+        if (
+          credentials?.email === 'test-user@example.com' &&
+          credentials?.password === 'test-password'
+        ) {
           const user = await prisma.user.findUnique({
             where: { email: 'test-user@example.com' },
-            select: { id: true, email: true, name: true, role: true }
+            select: { id: true, email: true, name: true, role: true },
           });
           if (user) {
             return user;
           }
         }
         return null;
-      }
-    }
+      },
+    },
   ],
   socialProviders: {
     github: {
@@ -41,38 +44,45 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 7, // 7 days
   },
   callbacks: {
-                session: ({ session, user }: { session: any; user: any }) => {
-              // Verificar si el usuario tiene rol, si no, asignar ADMIN por defecto
-              const userRole = user.role || 'ADMIN';
-              
-              return {
-                ...session,
-                user: {
-                  ...session.user,
-                  id: user.id,
-                  name: user.name,
-                  email: user.email,
-                  role: userRole,
-                },
-              };
-            },
-                user: async (user: any) => {
-              // Para usuarios de GitHub, siempre asignar rol ADMIN
-              if (user.email && user.email.includes('@')) {
-                try {
-                  await prisma.user.update({
-                    where: { id: user.id },
-                    data: { role: 'ADMIN' },
-                  });
-                  user.role = 'ADMIN';
-                } catch (error) {
-                  console.error('Error al asignar rol ADMIN:', error);
-                  user.role = 'ADMIN'; // Asignar por defecto en memoria
-                }
-              }
-              
-              return user;
-            },
+    session: ({
+      session,
+      user,
+    }: {
+      session: { user: Record<string, unknown> };
+      user: Record<string, unknown>;
+    }) => {
+      // Verificar si el usuario tiene rol, si no, asignar ADMIN por defecto
+      const userRole = (user.role as string) || 'ADMIN';
+
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id as string,
+          name: user.name as string,
+          email: user.email as string,
+          role: userRole,
+        },
+      };
+    },
+    user: async (user: Record<string, unknown>) => {
+      // Para usuarios de GitHub, siempre asignar rol ADMIN
+      const userEmail = user.email as string;
+      if (userEmail && userEmail.includes('@')) {
+        try {
+          await prisma.user.update({
+            where: { id: user.id as string },
+            data: { role: 'ADMIN' },
+          });
+          user.role = 'ADMIN';
+        } catch {
+          // Error handling
+          user.role = 'ADMIN'; // Asignar por defecto en memoria
+        }
+      }
+
+      return user;
+    },
   },
   pages: {
     signIn: '/',

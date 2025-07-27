@@ -1,4 +1,3 @@
-
 describe('Formato de moneda', () => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-ES', {

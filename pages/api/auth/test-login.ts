@@ -3,7 +3,10 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Método no permitido' });
   }
@@ -28,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Crear una sesión personalizada con un token único
     const sessionToken = `custom-test-session-${Date.now()}-${testUser.id}`;
-    
+
     // Crear la sesión en la base de datos
     await prisma.session.create({
       data: {
@@ -45,18 +48,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const cookies = [
       `custom-auth-token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`,
       `better-auth.session-token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`,
-      `session-token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`
+      `session-token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`,
     ];
 
     // Redirigir a la página principal con todas las cookies
     res.writeHead(302, {
-      'Location': '/',
-      'Set-Cookie': cookies
+      Location: '/',
+      'Set-Cookie': cookies,
     });
     res.end();
-
-  } catch (error) {
-    console.error('Error al crear login de prueba:', error);
+  } catch {
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
-} 
+}

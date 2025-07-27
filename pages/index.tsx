@@ -8,38 +8,33 @@ import { useUserRole } from '@/lib/auth/UserRoleContext';
 
 const Home = () => {
   const router = useRouter();
-  const { data: session, isPending, refetch } = useSession();
+  const { data: session, isPending } = useSession();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [showAccessDenied, setShowAccessDenied] = useState(false);
   const [deniedFeature, setDeniedFeature] = useState('');
   const [testSession, setTestSession] = useState(null);
   const [isCheckingTestSession, setIsCheckingTestSession] = useState(false);
-  
+
   // Usar el contexto global para el rol
-  const { userRole, isLoading: roleLoading } = useUserRole();
-  
-  console.log('Home - isPending:', isPending);
-  console.log('Home - session:', session);
-  console.log('Home - testSession:', testSession);
+  const { userRole } = useUserRole();
 
   const handleSignIn = async () => {
     try {
       await signIn.social({ provider: 'github' });
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+    } catch {
+      // Error handling
     }
   };
 
   const handleTestUserLogin = async () => {
     try {
-      console.log('🔄 Iniciando login de usuario de prueba...');
-
       // Usar el endpoint personalizado que crea la sesión y redirige
       window.location.href = '/api/auth/test-login';
-      
     } catch (error) {
-      console.error('❌ Error al iniciar sesión de prueba:', error);
-      alert('Error al iniciar sesión: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+      alert(
+        'Error al iniciar sesión: ' +
+          (error instanceof Error ? error.message : 'Error desconocido')
+      );
     }
   };
 
@@ -52,12 +47,12 @@ const Home = () => {
         try {
           const response = await fetch('/api/auth/check-test-session');
           const data = await response.json();
-          
+
           if (data.authenticated) {
             setTestSession(data.user);
           }
-        } catch (error) {
-          console.error('Error al verificar sesión de prueba:', error);
+        } catch {
+          // Error handling
         } finally {
           setIsCheckingTestSession(false);
         }
@@ -68,36 +63,26 @@ const Home = () => {
     };
 
     checkTestSession();
-  }, [session, isPending]);
-
-
+  }, [session, isPending, testSession]);
 
   const handleSignOut = async () => {
     try {
       setIsSigningOut(true);
-      
+
       // Si hay sesión de Better Auth, usar su método de logout
       if (session) {
-        console.log('🚪 Cerrando sesión de Better Auth...');
         await signOut();
         // Better Auth maneja la redirección automáticamente
       } else if (testSession) {
         // Si hay sesión de prueba, usar el endpoint personalizado
-        console.log('🚪 Cerrando sesión de prueba...');
         window.location.href = '/api/auth/logout-test';
       } else {
-        console.log('❌ No hay sesión activa para cerrar');
         setIsSigningOut(false);
       }
-    } catch (error) {
-      console.error('Error signing out:', error);
+    } catch {
       setIsSigningOut(false);
     }
   };
-
-
-
-
 
   const menuItems = [
     {
@@ -121,14 +106,13 @@ const Home = () => {
       availableFor: ['ADMIN'],
       icon: '📊',
     },
-
   ];
 
   if (isPending || isCheckingTestSession) {
     return (
       <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
         <div className='text-center'>
-          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto' />
           <p className='mt-4 text-gray-600'>Cargando...</p>
         </div>
       </div>
@@ -150,7 +134,7 @@ const Home = () => {
               </h1>
               <p className='text-gray-600'>Inicia sesión para continuar</p>
             </div>
-            
+
             <button
               onClick={handleSignIn}
               className='w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-4 rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-3 mb-6'
@@ -164,15 +148,27 @@ const Home = () => {
               </svg>
               Continuar con GitHub
             </button>
-            
+
             <div className='pt-6 border-t border-gray-200'>
-              <p className='text-sm text-gray-600 mb-4 font-medium'>¿Quieres probar el sistema con permisos limitados?</p>
+              <p className='text-sm text-gray-600 mb-4 font-medium'>
+                ¿Quieres probar el sistema con permisos limitados?
+              </p>
               <button
                 onClick={handleTestUserLogin}
                 className='w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-3'
               >
-                <svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' />
+                <svg
+                  className='w-6 h-6'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
+                  />
                 </svg>
                 Acceder como Usuario (Rol USER)
               </button>
@@ -188,20 +184,19 @@ const Home = () => {
     );
   }
 
-
-
   // Usar el rol del contexto global, con fallback para sesiones de prueba
-  const effectiveUserRole = userRole || (testSession as any)?.role || 'USER';
-  
+  const effectiveUserRole =
+    userRole || (testSession as { role?: string } | null)?.role || 'USER';
+
   // Mostrar todas las opciones del menú, pero con indicadores de permisos
-  const availableMenuItems = menuItems.map(item => {
+  const availableMenuItems = menuItems.map((item) => {
     const hasAccess = item.availableFor.includes(effectiveUserRole);
     const isRestricted = !item.availableFor.includes(effectiveUserRole);
-    
+
     return {
       ...item,
       hasAccess,
-      isRestricted
+      isRestricted,
     };
   });
 
@@ -219,7 +214,9 @@ const Home = () => {
             <div className='flex items-center gap-4'>
               <div className='text-sm text-gray-600'>
                 <span className='font-medium'>
-                  {session?.user?.name || (testSession as any)?.name || 'Usuario'}
+                  {session?.user?.name ||
+                    (testSession as { name?: string } | null)?.name ||
+                    'Usuario'}
                 </span>
                 <span className='ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full'>
                   {effectiveUserRole}
@@ -242,7 +239,7 @@ const Home = () => {
       <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {/* User Info */}
         <UserInfo />
-        
+
         {/* Menu Items */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {availableMenuItems.map((item) => (
@@ -257,8 +254,8 @@ const Home = () => {
                 }
               }}
               className={`group relative bg-white rounded-xl shadow-lg p-6 transition-all duration-300 transform hover:scale-105 cursor-pointer border-2 ${
-                item.hasAccess 
-                  ? 'hover:shadow-2xl border-blue-200 hover:border-blue-400' 
+                item.hasAccess
+                  ? 'hover:shadow-2xl border-blue-200 hover:border-blue-400'
                   : 'border-gray-200 opacity-60 hover:opacity-80'
               }`}
             >
@@ -266,11 +263,13 @@ const Home = () => {
               {item.hasAccess && (
                 <div className='absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
               )}
-              
+
               <div className='relative z-10'>
                 <div className='flex items-center justify-between mb-4'>
                   <div className='flex items-center'>
-                    <span className='text-4xl mr-4 transform group-hover:scale-110 transition-transform duration-200'>{item.icon}</span>
+                    <span className='text-4xl mr-4 transform group-hover:scale-110 transition-transform duration-200'>
+                      {item.icon}
+                    </span>
                     <h3 className='text-xl font-semibold text-gray-900 group-hover:text-blue-700 transition-colors duration-200'>
                       {item.title}
                     </h3>
@@ -281,15 +280,21 @@ const Home = () => {
                     </span>
                   )}
                 </div>
-                <p className='text-gray-600 mb-4 leading-relaxed'>{item.description}</p>
+                <p className='text-gray-600 mb-4 leading-relaxed'>
+                  {item.description}
+                </p>
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center text-sm'>
-                    <span className={`px-3 py-1 rounded-full font-medium transition-all duration-200 ${
-                      item.hasAccess 
-                        ? 'bg-green-100 text-green-800 group-hover:bg-green-200' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {item.hasAccess ? '✅ Acceso permitido' : '❌ Acceso restringido'}
+                    <span
+                      className={`px-3 py-1 rounded-full font-medium transition-all duration-200 ${
+                        item.hasAccess
+                          ? 'bg-green-100 text-green-800 group-hover:bg-green-200'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {item.hasAccess
+                        ? '✅ Acceso permitido'
+                        : '❌ Acceso restringido'}
                     </span>
                   </div>
                   {item.hasAccess ? (

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 import { withAuth } from '@/lib/auth/withAuth';
 
 interface Transaction {
@@ -19,7 +19,6 @@ const ReportsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Cargar transacciones desde la API
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -28,10 +27,10 @@ const ReportsPage = () => {
           const data = await response.json();
           setTransactions(data);
         } else {
-          console.error('Error al cargar transacciones');
+          // Error handling
         }
-      } catch (error) {
-        console.error('Error al cargar transacciones:', error);
+      } catch {
+        // Error handling
       } finally {
         setIsLoading(false);
       }
@@ -62,9 +61,14 @@ const ReportsPage = () => {
     const csvContent = [
       headers.join(','),
       ...transactions.map((t) =>
-        [t.id, `"${t.concept}"`, t.amount, t.type, t.date, `"${t.user?.name || 'N/A'}"`].join(
-          ','
-        )
+        [
+          t.id,
+          `"${t.concept}"`,
+          t.amount,
+          t.type,
+          t.date,
+          `"${t.user?.name || 'N/A'}"`,
+        ].join(',')
       ),
     ].join('\n');
 
@@ -129,222 +133,221 @@ const ReportsPage = () => {
         </div>
       </header>
 
-            {/* Main Content */}
       <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {isLoading ? (
-          <div className='flex items-center justify-center py-12'>
-            <div className='text-center'>
-              <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
-              <p className='mt-4 text-gray-600'>Cargando reportes...</p>
-            </div>
+          <div className='text-center'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto' />
+            <p className='mt-4 text-gray-600'>Cargando reportes...</p>
           </div>
         ) : (
           <>
             {/* Summary Cards */}
             <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
-          <div className='bg-white rounded-lg shadow-md p-6'>
-            <div className='flex items-center'>
-              <div className='p-2 bg-green-100 rounded-lg'>
-                <span className='text-2xl'>💰</span>
-              </div>
-              <div className='ml-4'>
-                <p className='text-sm font-medium text-gray-600'>
-                  Total Ingresos
-                </p>
-                <p className='text-2xl font-bold text-green-600'>
-                  {formatCurrency(totalIncome)}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className='bg-white rounded-lg shadow-md p-6'>
-            <div className='flex items-center'>
-              <div className='p-2 bg-red-100 rounded-lg'>
-                <span className='text-2xl'>💸</span>
-              </div>
-              <div className='ml-4'>
-                <p className='text-sm font-medium text-gray-600'>
-                  Total Egresos
-                </p>
-                <p className='text-2xl font-bold text-red-600'>
-                  {formatCurrency(totalExpense)}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className='bg-white rounded-lg shadow-md p-6'>
-            <div className='flex items-center'>
-              <div className='p-2 bg-blue-100 rounded-lg'>
-                <span className='text-2xl'>📊</span>
-              </div>
-              <div className='ml-4'>
-                <p className='text-sm font-medium text-gray-600'>
-                  Saldo Actual
-                </p>
-                <p
-                  className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}
-                >
-                  {formatCurrency(balance)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Charts Section */}
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8'>
-          {/* Bar Chart */}
-          <div className='bg-white rounded-lg shadow-md p-6'>
-            <h3 className='text-lg font-semibold text-gray-900 mb-4'>
-              Comparación Ingresos vs Egresos
-            </h3>
-            <div className='space-y-4'>
-              {chartData.map((item) => (
-                <div key={`chart-${item.label}`}>
-                  <div className='flex justify-between items-center mb-2'>
-                    <span className='text-sm font-medium text-gray-700'>
-                      {item.label}
-                    </span>
-                    <span className='text-sm font-bold text-gray-900'>
-                      {formatCurrency(item.value)}
-                    </span>
+              <div className='bg-white rounded-xl shadow-lg p-6 border border-gray-200'>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Ingresos Totales
+                    </p>
+                    <p className='text-3xl font-bold text-green-600'>
+                      {formatCurrency(totalIncome)}
+                    </p>
                   </div>
-                  <div className='w-full bg-gray-200 rounded-full h-4'>
-                    <div
-                      className={`h-4 rounded-full ${item.color}`}
-                      style={{ width: `${(item.value / maxValue) * 100}%` }}
-                    ></div>
+                  <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center'>
+                    <span className='text-2xl'>💰</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          {/* Pie Chart */}
-          <div className='bg-white rounded-lg shadow-md p-6'>
-            <h3 className='text-lg font-semibold text-gray-900 mb-4'>
-              Distribución de Movimientos
-            </h3>
-            <div className='flex items-center justify-center'>
-              <div className='relative w-32 h-32'>
-                <svg
-                  className='w-32 h-32 transform -rotate-90'
-                  viewBox='0 0 32 32'
-                >
-                  <circle
-                    cx='16'
-                    cy='16'
-                    r='14'
-                    fill='none'
-                    stroke='#e5e7eb'
-                    strokeWidth='4'
-                  />
-                  <circle
-                    cx='16'
-                    cy='16'
-                    r='14'
-                    fill='none'
-                    stroke='#10b981'
-                    strokeWidth='4'
-                    strokeDasharray={`${(totalIncome / (totalIncome + totalExpense)) * 88} 88`}
-                    strokeLinecap='round'
-                  />
-                </svg>
-                <div className='absolute inset-0 flex items-center justify-center'>
-                  <div className='text-center'>
-                    <div className='text-lg font-bold text-gray-900'>
-                      {Math.round(
-                        (totalIncome / (totalIncome + totalExpense)) * 100
-                      )}
-                      %
+              <div className='bg-white rounded-xl shadow-lg p-6 border border-gray-200'>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Gastos Totales
+                    </p>
+                    <p className='text-3xl font-bold text-red-600'>
+                      {formatCurrency(totalExpense)}
+                    </p>
+                  </div>
+                  <div className='w-12 h-12 bg-red-100 rounded-full flex items-center justify-center'>
+                    <span className='text-2xl'>💸</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className='bg-white rounded-xl shadow-lg p-6 border border-gray-200'>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <p className='text-sm font-medium text-gray-600'>Balance</p>
+                    <p
+                      className={`text-3xl font-bold ${
+                        balance >= 0
+                          ? 'text-green-600 group-hover:text-green-700'
+                          : 'text-red-600 group-hover:text-red-700'
+                      }`}
+                    >
+                      {formatCurrency(balance)}
+                    </p>
+                  </div>
+                  <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center'>
+                    <span className='text-2xl'>📊</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Charts */}
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8'>
+              {/* Bar Chart */}
+              <div className='bg-white rounded-xl shadow-lg p-6 border border-gray-200'>
+                <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+                  Movimientos Financieros
+                </h3>
+                <div className='space-y-4'>
+                  {chartData.map((item) => (
+                    <div key={item.label} className='flex items-center'>
+                      <div className='w-24 text-sm font-medium text-gray-700'>
+                        {item.label}
+                      </div>
+                      <div className='flex-1 ml-4'>
+                        <div className='relative'>
+                          <div
+                            className={`h-8 rounded-lg ${item.color}`}
+                            style={{
+                              width: `${(item.value / maxValue) * 100}%`,
+                            }}
+                          />
+                          <span className='absolute inset-0 flex items-center justify-center text-white font-medium text-sm'>
+                            {formatCurrency(item.value)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className='text-xs text-gray-600'>Ingresos</div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Pie Chart */}
+              <div className='bg-white rounded-xl shadow-lg p-6 border border-gray-200'>
+                <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+                  Distribución del Balance
+                </h3>
+                <div className='flex items-center justify-center'>
+                  <div className='relative w-48 h-48'>
+                    <svg
+                      className='w-full h-full transform -rotate-90'
+                      viewBox='0 0 100 100'
+                    >
+                      <circle
+                        cx='50'
+                        cy='50'
+                        r='40'
+                        fill='none'
+                        stroke='#e5e7eb'
+                        strokeWidth='8'
+                      />
+                      {totalIncome > 0 && (
+                        <circle
+                          cx='50'
+                          cy='50'
+                          r='40'
+                          fill='none'
+                          stroke='#10b981'
+                          strokeWidth='8'
+                          strokeDasharray={`${(totalIncome / (totalIncome + totalExpense)) * 251.2} 251.2`}
+                        />
+                      )}
+                    </svg>
+                    <div className='absolute inset-0 flex items-center justify-center'>
+                      <div className='text-center'>
+                        <p className='text-2xl font-bold text-gray-900'>
+                          {totalIncome + totalExpense > 0
+                            ? Math.round(
+                                (totalIncome / (totalIncome + totalExpense)) *
+                                  100
+                              )
+                            : 0}
+                          %
+                        </p>
+                        <p className='text-sm text-gray-600'>Ingresos</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className='mt-4 flex justify-center space-x-4'>
-              <div className='flex items-center'>
-                <div className='w-3 h-3 bg-green-500 rounded-full mr-2'></div>
-                <span className='text-sm text-gray-700'>Ingresos</span>
+
+            {/* Transactions Table */}
+            <div className='bg-white rounded-xl shadow-lg border border-gray-200'>
+              <div className='px-6 py-4 border-b border-gray-200'>
+                <h3 className='text-lg font-semibold text-gray-900'>
+                  Últimas Transacciones
+                </h3>
               </div>
-              <div className='flex items-center'>
-                <div className='w-3 h-3 bg-red-500 rounded-full mr-2'></div>
-                <span className='text-sm text-gray-700'>Egresos</span>
+              <div className='overflow-x-auto'>
+                <table className='min-w-full divide-y divide-gray-200'>
+                  <thead className='bg-gray-50'>
+                    <tr>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Concepto
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Monto
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Tipo
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Fecha
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Usuario
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className='bg-white divide-y divide-gray-200'>
+                    {transactions.slice(0, 10).map((transaction) => (
+                      <tr key={transaction.id} className='hover:bg-gray-50'>
+                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
+                          {transaction.concept}
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
+                          <span
+                            className={
+                              transaction.type === 'INCOME'
+                                ? 'text-green-600 font-semibold'
+                                : 'text-red-600 font-semibold'
+                            }
+                          >
+                            {transaction.type === 'INCOME' ? '+' : '-'}
+                            {formatCurrency(transaction.amount)}
+                          </span>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              transaction.type === 'INCOME'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
+                            }`}
+                          >
+                            {transaction.type === 'INCOME'
+                              ? '💰 Ingreso'
+                              : '💸 Gasto'}
+                          </span>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
+                          {formatDate(transaction.date)}
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
+                          {transaction.user?.name || 'N/A'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Recent Transactions */}
-        <div className='bg-white rounded-lg shadow-md overflow-hidden'>
-          <div className='px-6 py-4 border-b border-gray-200'>
-            <h3 className='text-lg font-semibold text-gray-900'>
-              Transacciones Recientes
-            </h3>
-          </div>
-          <div className='overflow-x-auto'>
-            <table className='min-w-full divide-y divide-gray-200'>
-              <thead className='bg-gray-50'>
-                <tr>
-                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                    Concepto
-                  </th>
-                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                    Monto
-                  </th>
-                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                    Fecha
-                  </th>
-                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                    Usuario
-                  </th>
-                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                    Tipo
-                  </th>
-                </tr>
-              </thead>
-              <tbody className='bg-white divide-y divide-gray-200'>
-                {transactions.slice(0, 5).map((transaction) => (
-                  <tr key={transaction.id} className='hover:bg-gray-50'>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
-                      {transaction.concept}
-                    </td>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                      <span
-                        className={
-                          transaction.type === 'INCOME'
-                            ? 'text-green-600'
-                            : 'text-red-600'
-                        }
-                      >
-                        {transaction.type === 'INCOME' ? '+' : '-'}{' '}
-                        {formatCurrency(transaction.amount)}
-                      </span>
-                    </td>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                      {formatDate(transaction.date)}
-                    </td>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                      {transaction.user?.name || 'N/A'}
-                    </td>
-                    <td className='px-6 py-4 whitespace-nowrap'>
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          transaction.type === 'INCOME'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}
-                      >
-                        {transaction.type === 'INCOME' ? 'Ingreso' : 'Egreso'}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
           </>
         )}
       </main>

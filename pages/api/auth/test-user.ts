@@ -3,14 +3,15 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido' });
   }
 
   try {
-    console.log('🔐 Test User Login - Iniciando...');
-    
     // Asegurar que el usuario de prueba existe
     const testUser = await prisma.user.upsert({
       where: { email: 'test-user@example.com' },
@@ -28,12 +29,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    console.log('✅ Test User Login - Usuario asegurado:', testUser.name, 'Rol:', testUser.role);
-
     // Crear una sesión manualmente con el formato que espera Better Auth
     const sessionId = `test-session-${Date.now()}`;
     const sessionToken = `test-token-${Date.now()}-${testUser.id}`;
-    
+
     // Crear la sesión en la base de datos
     await prisma.session.create({
       data: {
@@ -46,11 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    // Establecer la cookie con el formato exacto que espera Better Auth
-    const sessionCookie = `better-auth.session-token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`;
-    
-    console.log('✅ Test User Login - Sesión creada, cookie establecida:', sessionToken);
-
     // Devolver respuesta JSON con éxito
     return res.status(200).json({
       success: true,
@@ -59,12 +53,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         id: testUser.id,
         name: testUser.name,
         email: testUser.email,
-        role: testUser.role
-      }
+        role: testUser.role,
+      },
     });
-
-  } catch (error) {
-    console.error('❌ Error al crear usuario de prueba:', error);
+  } catch {
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
-} 
+}

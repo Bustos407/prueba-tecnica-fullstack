@@ -14,10 +14,10 @@ describe('Validación de roles y permisos', () => {
 
   const canAccessResource = (userRole: string, resourceType: string) => {
     const permissions: Record<string, string[]> = {
-      'transactions': ['USER', 'ADMIN'],
-      'users': ['ADMIN'],
-      'reports': ['ADMIN'],
-      'settings': ['ADMIN']
+      transactions: ['USER', 'ADMIN'],
+      users: ['ADMIN'],
+      reports: ['ADMIN'],
+      settings: ['ADMIN'],
     };
 
     return permissions[resourceType]?.includes(userRole) || false;
@@ -64,17 +64,20 @@ describe('Validación de sesiones', () => {
     if (!session.user.id) return false;
     if (!session.user.email) return false;
     if (!session.user.role) return false;
-    
+
     return true;
   };
 
-  const isSessionExpired = (session: any, maxAge: number = 7 * 24 * 60 * 60 * 1000) => {
+  const isSessionExpired = (
+    session: any,
+    maxAge: number = 7 * 24 * 60 * 60 * 1000
+  ) => {
     if (!session || !session.createdAt) return true;
-    
+
     const createdAt = new Date(session.createdAt).getTime();
     const now = Date.now();
-    
-    return (now - createdAt) > maxAge;
+
+    return now - createdAt > maxAge;
   };
 
   test('debe validar sesión correcta', () => {
@@ -82,8 +85,8 @@ describe('Validación de sesiones', () => {
       user: {
         id: 'user123',
         email: 'test@example.com',
-        role: 'USER'
-      }
+        role: 'USER',
+      },
     };
 
     expect(validateSession(validSession)).toBe(true);
@@ -97,7 +100,7 @@ describe('Validación de sesiones', () => {
 
   test('debe rechazar sesión sin datos de usuario', () => {
     const invalidSession = {
-      user: {}
+      user: {},
     };
 
     expect(validateSession(invalidSession)).toBe(false);
@@ -105,7 +108,7 @@ describe('Validación de sesiones', () => {
 
   test('debe detectar sesión expirada', () => {
     const expiredSession = {
-      createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString()
+      createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
     };
 
     expect(isSessionExpired(expiredSession)).toBe(true);
@@ -113,7 +116,7 @@ describe('Validación de sesiones', () => {
 
   test('debe validar sesión no expirada', () => {
     const validSession = {
-      createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString()
+      createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
     };
 
     expect(isSessionExpired(validSession)).toBe(false);
@@ -125,12 +128,13 @@ describe('Validación de tokens', () => {
     if (!token) return false;
     if (token.length < 10) return false;
     if (!/^[a-zA-Z0-9_-]+$/.test(token)) return false;
-    
+
     return true;
   };
 
   const generateTestToken = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
     let result = '';
     for (let i = 0; i < 32; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -160,4 +164,4 @@ describe('Validación de tokens', () => {
     expect(validateToken(token)).toBe(true);
     expect(token.length).toBe(32);
   });
-}); 
+});

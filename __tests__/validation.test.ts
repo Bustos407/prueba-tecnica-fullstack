@@ -1,4 +1,3 @@
-
 describe('Validación de datos de transacciones', () => {
   const validateTransactionData = (data: {
     amount?: number;
@@ -32,7 +31,7 @@ describe('Validación de datos de transacciones', () => {
       amount: 1000,
       concept: 'Salario mensual',
       type: 'INCOME',
-      date: '2024-01-15'
+      date: '2024-01-15',
     };
 
     const result = validateTransactionData(validTransaction);
@@ -44,7 +43,7 @@ describe('Validación de datos de transacciones', () => {
       amount: 0,
       concept: 'Salario mensual',
       type: 'INCOME',
-      date: '2024-01-15'
+      date: '2024-01-15',
     };
 
     const result = validateTransactionData(invalidTransaction);
@@ -56,11 +55,13 @@ describe('Validación de datos de transacciones', () => {
       amount: 1000,
       concept: 'Ab',
       type: 'INCOME',
-      date: '2024-01-15'
+      date: '2024-01-15',
     };
 
     const result = validateTransactionData(invalidTransaction);
-    expect(result).toEqual({ error: 'El concepto debe tener al menos 3 caracteres' });
+    expect(result).toEqual({
+      error: 'El concepto debe tener al menos 3 caracteres',
+    });
   });
 
   test('debe rechazar tipo inválido', () => {
@@ -68,7 +69,7 @@ describe('Validación de datos de transacciones', () => {
       amount: 1000,
       concept: 'Salario mensual',
       type: 'INVALID',
-      date: '2024-01-15'
+      date: '2024-01-15',
     };
 
     const result = validateTransactionData(invalidTransaction);
@@ -80,7 +81,7 @@ describe('Validación de datos de transacciones', () => {
       amount: 1000,
       concept: 'Salario mensual',
       type: 'INCOME',
-      date: ''
+      date: '',
     };
 
     const result = validateTransactionData(invalidTransaction);
@@ -115,7 +116,7 @@ describe('Validación de datos de usuario', () => {
     const validUser = {
       name: 'Juan Pérez',
       email: 'juan@example.com',
-      role: 'USER'
+      role: 'USER',
     };
 
     const result = validateUserData(validUser);
@@ -126,18 +127,20 @@ describe('Validación de datos de usuario', () => {
     const invalidUser = {
       name: 'J',
       email: 'juan@example.com',
-      role: 'USER'
+      role: 'USER',
     };
 
     const result = validateUserData(invalidUser);
-    expect(result).toEqual({ error: 'El nombre debe tener al menos 2 caracteres' });
+    expect(result).toEqual({
+      error: 'El nombre debe tener al menos 2 caracteres',
+    });
   });
 
   test('debe rechazar email inválido', () => {
     const invalidUser = {
       name: 'Juan Pérez',
       email: 'juanexample.com',
-      role: 'USER'
+      role: 'USER',
     };
 
     const result = validateUserData(invalidUser);
@@ -148,10 +151,10 @@ describe('Validación de datos de usuario', () => {
     const invalidUser = {
       name: 'Juan Pérez',
       email: 'juan@example.com',
-      role: 'INVALID'
+      role: 'INVALID',
     };
 
     const result = validateUserData(invalidUser);
     expect(result).toEqual({ error: 'El rol debe ser USER o ADMIN' });
   });
-}); 
+});

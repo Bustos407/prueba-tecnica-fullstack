@@ -23,10 +23,7 @@ const validateUserData = (data: {
 };
 
 // Función para manejar POST requests (CREATE)
-const handlePost = async (
-  req: AuthenticatedRequest,
-  res: NextApiResponse
-) => {
+const handlePost = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   try {
     const validationError = validateUserData(req.body);
     if (validationError) {
@@ -37,7 +34,7 @@ const handlePost = async (
 
     // Verificar si el email ya existe
     const existingUser = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() }
+      where: { email: email.toLowerCase() },
     });
 
     if (existingUser) {
@@ -59,12 +56,11 @@ const handlePost = async (
         email: true,
         role: true,
         createdAt: true,
-      }
+      },
     });
 
     res.status(201).json(newUser);
-  } catch (error: unknown) {
-    console.error('Error creating user:', error);
+  } catch {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
@@ -84,7 +80,7 @@ const handleDelete = async (
     // Verificar si el usuario existe
     const userToDelete = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, role: true }
+      select: { id: true, email: true, role: true },
     });
 
     if (!userToDelete) {
@@ -93,23 +89,22 @@ const handleDelete = async (
 
     // Proteger el usuario de pruebas
     if (userToDelete.email === 'test-user@example.com') {
-      return res.status(403).json({ 
+      return res.status(403).json({
         error: 'No se puede eliminar el usuario de pruebas',
-        userEmail: userToDelete.email
+        userEmail: userToDelete.email,
       });
     }
 
     // Eliminar el usuario
     await prisma.user.delete({
-      where: { id: userId }
+      where: { id: userId },
     });
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: 'Usuario eliminado exitosamente',
-      deletedUser: { id: userToDelete.id, email: userToDelete.email }
+      deletedUser: { id: userToDelete.id, email: userToDelete.email },
     });
-  } catch (error: unknown) {
-    console.error('Error deleting user:', error);
+  } catch {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
@@ -230,11 +225,7 @@ const handleDelete = async (
  *       500:
  *         description: Error interno del servidor
  */
-async function handler(
-  req: AuthenticatedRequest,
-  res: NextApiResponse
-) {
-
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     try {
       const users = await prisma.user.findMany({
@@ -264,6 +255,6 @@ async function handler(
     res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+};
 
 export default withAuth(handler, 'ADMIN');

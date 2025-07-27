@@ -34,11 +34,7 @@ const prisma = new PrismaClient();
  *       500:
  *         description: Error interno del servidor
  */
-async function handler(
-  req: AuthenticatedRequest,
-  res: NextApiResponse
-) {
-
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     try {
       const transactions = await prisma.transaction.findMany({
@@ -107,6 +103,6 @@ async function handler(
     res.setHeader('Allow', ['GET']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+};
 
 export default withAuth(handler, 'ADMIN');

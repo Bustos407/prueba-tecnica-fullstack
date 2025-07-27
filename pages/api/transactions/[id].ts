@@ -123,10 +123,11 @@ const handlePut = async (
   try {
     // Solo los ADMIN pueden actualizar transacciones
     if (req.user?.role !== 'ADMIN') {
-      return res.status(403).json({ 
-        error: 'Acceso denegado. Solo los administradores pueden actualizar transacciones.',
+      return res.status(403).json({
+        error:
+          'Acceso denegado. Solo los administradores pueden actualizar transacciones.',
         userRole: req.user?.role,
-        requiredRole: 'ADMIN'
+        requiredRole: 'ADMIN',
       });
     }
 
@@ -165,7 +166,6 @@ const handlePut = async (
     ) {
       res.status(404).json({ error: 'Transacción no encontrada' });
     } else {
-      console.error('Error al actualizar transacción:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   }
@@ -180,10 +180,11 @@ const handleDelete = async (
   try {
     // Solo los ADMIN pueden eliminar transacciones
     if (req.user?.role !== 'ADMIN') {
-      return res.status(403).json({ 
-        error: 'Acceso denegado. Solo los administradores pueden eliminar transacciones.',
+      return res.status(403).json({
+        error:
+          'Acceso denegado. Solo los administradores pueden eliminar transacciones.',
         userRole: req.user?.role,
-        requiredRole: 'ADMIN'
+        requiredRole: 'ADMIN',
       });
     }
 
@@ -201,16 +202,12 @@ const handleDelete = async (
     ) {
       res.status(404).json({ error: 'Transacción no encontrada' });
     } else {
-      console.error('Error al eliminar transacción:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   }
 };
 
-async function handler(
-  req: AuthenticatedRequest,
-  res: NextApiResponse
-) {
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   const { id } = req.query;
 
   if (req.method === 'PUT') {
@@ -221,6 +218,6 @@ async function handler(
     res.setHeader('Allow', ['PUT', 'DELETE']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+};
 
-export default withAuth(handler); 
+export default withAuth(handler);

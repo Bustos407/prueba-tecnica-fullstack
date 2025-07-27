@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import { useSession } from './client';
 
 interface UserRoleContextType {
@@ -7,7 +13,9 @@ interface UserRoleContextType {
   refreshRole: () => Promise<void>;
 }
 
-const UserRoleContext = createContext<UserRoleContextType | undefined>(undefined);
+const UserRoleContext = createContext<UserRoleContextType | undefined>(
+  undefined
+);
 
 export const useUserRole = () => {
   const context = useContext(UserRoleContext);
@@ -21,7 +29,9 @@ interface UserRoleProviderProps {
   children: ReactNode;
 }
 
-export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({ children }) => {
+export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({
+  children,
+}) => {
   const { data: session } = useSession();
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +42,7 @@ export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({ children }) 
       try {
         const response = await fetch('/api/auth/check-test-session');
         const data = await response.json();
-        
+
         if (data.authenticated) {
           setUserRole('USER');
           setIsLoading(false);
@@ -42,8 +52,8 @@ export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({ children }) 
           setIsLoading(false);
           return;
         }
-      } catch (error) {
-        console.error('Error al verificar sesión de prueba:', error);
+      } catch {
+        // Error handling
         setUserRole(null);
         setIsLoading(false);
         return;
@@ -52,7 +62,7 @@ export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({ children }) 
 
     // Verificar si es una sesión de prueba (no usar debug-session para estas)
     const isTestSession = session.user.email === 'test-user@example.com';
-    
+
     if (isTestSession) {
       setUserRole('USER');
       setIsLoading(false);
@@ -61,11 +71,11 @@ export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({ children }) 
 
     try {
       // Para usuarios de GitHub, usar el rol de la sesión directamente
-      const userRole = (session.user as any)?.role || 'ADMIN';
+      const userRole = (session.user as { role?: string })?.role || 'ADMIN';
       setUserRole(userRole);
-    } catch (error) {
-      console.error('Error al verificar rol:', error);
-      const fallbackRole = (session.user as any)?.role || 'ADMIN';
+    } catch {
+      // Error handling
+      const fallbackRole = (session.user as { role?: string })?.role || 'ADMIN';
       setUserRole(fallbackRole);
     } finally {
       setIsLoading(false);
@@ -84,7 +94,7 @@ export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({ children }) 
   const value = {
     userRole,
     isLoading,
-    refreshRole
+    refreshRole,
   };
 
   return (
@@ -92,4 +102,4 @@ export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({ children }) 
       {children}
     </UserRoleContext.Provider>
   );
-}; 
+};

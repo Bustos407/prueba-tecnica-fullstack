@@ -21,7 +21,8 @@ const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [editingTransaction, setEditingTransaction] =
+    useState<Transaction | null>(null);
   const [formData, setFormData] = useState({
     amount: '',
     concept: '',
@@ -44,10 +45,10 @@ const TransactionsPage = () => {
         const data = await response.json();
         setTransactions(data);
       } else {
-        console.error('Error fetching transactions');
+        // Error fetching transactions
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
+      // Error handling
     } finally {
       setIsLoading(false);
     }
@@ -80,8 +81,8 @@ const TransactionsPage = () => {
         const error = await response.json();
         alert(`Error: ${error.error}`);
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
+      // Error handling
       alert('Error al crear la transacción');
     } finally {
       setIsSubmitting(false);
@@ -105,13 +106,16 @@ const TransactionsPage = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/transactions/${editingTransaction.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `/api/transactions/${editingTransaction.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         const updatedTransaction = await response.json();
@@ -131,8 +135,8 @@ const TransactionsPage = () => {
         const error = await response.json();
         alert(`Error: ${error.error}`);
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
+      // Error handling
       alert('Error al actualizar la transacción');
     } finally {
       setIsSubmitting(false);
@@ -156,8 +160,8 @@ const TransactionsPage = () => {
         const error = await response.json();
         alert(`Error: ${error.error}`);
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
+      // Error handling
       alert('Error al eliminar la transacción');
     }
   };
@@ -244,7 +248,9 @@ const TransactionsPage = () => {
                 <span className='text-2xl'>📈</span>
               </div>
               <div className='ml-4'>
-                <p className='text-sm font-medium text-gray-600'>Ingresos Totales</p>
+                <p className='text-sm font-medium text-gray-600'>
+                  Ingresos Totales
+                </p>
                 <p className='text-2xl font-bold text-green-600'>
                   {formatCurrency(totalIncome)}
                 </p>
@@ -257,7 +263,9 @@ const TransactionsPage = () => {
                 <span className='text-2xl'>📉</span>
               </div>
               <div className='ml-4'>
-                <p className='text-sm font-medium text-gray-600'>Gastos Totales</p>
+                <p className='text-sm font-medium text-gray-600'>
+                  Gastos Totales
+                </p>
                 <p className='text-2xl font-bold text-red-600'>
                   {formatCurrency(totalExpenses)}
                 </p>
@@ -271,11 +279,13 @@ const TransactionsPage = () => {
               </div>
               <div className='ml-4'>
                 <p className='text-sm font-medium text-gray-600'>Balance</p>
-                <p className={`text-2xl font-bold ${
-                  balance >= 0 
-                    ? 'text-green-600 group-hover:text-green-700' 
-                    : 'text-red-600 group-hover:text-red-700'
-                }`}>
+                <p
+                  className={`text-2xl font-bold ${
+                    balance >= 0
+                      ? 'text-green-600 group-hover:text-green-700'
+                      : 'text-red-600 group-hover:text-red-700'
+                  }`}
+                >
                   {formatCurrency(balance)}
                 </p>
               </div>
@@ -326,14 +336,21 @@ const TransactionsPage = () => {
                     >
                       <div className='flex flex-col items-center'>
                         <span className='text-4xl mb-2'>📝</span>
-                        <p className='text-lg font-medium'>No hay transacciones registradas</p>
-                        <p className='text-sm text-gray-400'>Comienza agregando tu primera transacción</p>
+                        <p className='text-lg font-medium'>
+                          No hay transacciones registradas
+                        </p>
+                        <p className='text-sm text-gray-400'>
+                          Comienza agregando tu primera transacción
+                        </p>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   transactions.map((transaction, index) => (
-                    <tr key={transaction.id} className={`hover:bg-gray-50 transition-colors duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                    <tr
+                      key={transaction.id}
+                      className={`hover:bg-gray-50 transition-colors duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                    >
                       <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
                         {transaction.concept}
                       </td>
@@ -356,7 +373,9 @@ const TransactionsPage = () => {
                         <div className='flex items-center'>
                           <div className='w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2'>
                             <span className='text-xs font-medium text-blue-600'>
-                              {transaction.user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                              {transaction.user?.name
+                                ?.charAt(0)
+                                ?.toUpperCase() || 'U'}
                             </span>
                           </div>
                           {transaction.user?.name || 'N/A'}
@@ -370,7 +389,9 @@ const TransactionsPage = () => {
                               : 'bg-red-100 text-red-800 hover:bg-red-200'
                           }`}
                         >
-                          {transaction.type === 'INCOME' ? '💰 Ingreso' : '💸 Gasto'}
+                          {transaction.type === 'INCOME'
+                            ? '💰 Ingreso'
+                            : '💸 Gasto'}
                         </span>
                       </td>
                       {isAdmin && (
