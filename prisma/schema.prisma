@@ -74,7 +74,7 @@ model Transaction {
 model Verification {
   id         String   @id
   identifier String
-  token      String   @unique
+  token      String?  @unique
   value      String
   expiresAt  DateTime
   createdAt  DateTime
