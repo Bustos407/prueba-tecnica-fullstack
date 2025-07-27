@@ -1,66 +1,63 @@
 # Sistema de Gestión Financiera
 
-## Descripción
+> **Aplicación web completa** para gestionar ingresos, gastos y reportes financieros con autenticación y control de roles.
 
-Sistema completo de gestión de ingresos y egresos con autenticación, roles de usuario y reportes financieros. Desarrollado con Next.js, TypeScript, Prisma y Better Auth.
+## Características Principales
 
-## Características Implementadas
+### Gestión Financiera
+- **Transacciones:** Crear, editar, eliminar ingresos y gastos
+- **Balance automático:** Cálculo en tiempo real de saldos
+- **Reportes:** Gráficos y exportación a CSV
+- **Gestión de usuarios:** CRUD completo con roles
 
-### ✅ Funcionalidades Principales
+### Seguridad y Autenticación
+- **GitHub OAuth:** Login seguro con GitHub
+- **Sistema de roles:** USER y ADMIN con permisos específicos
+- **Protección de rutas:** Middleware de autenticación
+- **Validación de datos:** En frontend y backend
 
-1. **Autenticación con GitHub**
-   - Integración con Better Auth
-   - Todos los nuevos usuarios son automáticamente ADMIN para facilitar pruebas
+### Tecnologías Modernas
+- **Next.js 15** con TypeScript
+- **Tailwind CSS** para UI moderna
+- **PostgreSQL** con Prisma ORM
+- **Swagger/OpenAPI** para documentación
+- **Jest** para testing
 
-2. **Gestión de Ingresos y Gastos**
-   - Tabla de transacciones con filtros
-   - Formulario para agregar nuevas transacciones
-   - Cálculo automático de saldos
+---
 
-3. **Gestión de Usuarios**
-   - Lista de usuarios con roles
-   - Edición de nombres y roles
-   - Control de acceso por roles
+## Tabla de Contenidos
 
-4. **Reportes Financieros**
-   - Gráficos de ingresos vs egresos
-   - Saldo actual
-   - Descarga de reportes en CSV
+- [Características Principales](#características-principales)
+- [Instalación Rápida](#instalación-rápida)
+- [Configuración Detallada](#configuración-detallada)
+- [Despliegue en Vercel](#despliegue-en-vercel)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Roles y Permisos](#roles-y-permisos)
+- [Testing](#testing)
+- [API Documentation](#api-documentation)
 
-### ✅ Tecnologías Utilizadas
+---
 
-- **Frontend:** Next.js 15, TypeScript, Tailwind CSS
-- **Backend:** Next.js API Routes, Prisma ORM
-- **Base de Datos:** PostgreSQL (Supabase)
-- **Autenticación:** Better Auth con GitHub
-- **Documentación:** OpenAPI/Swagger
-- **Testing:** Jest, React Testing Library
-
-## Instalación y Configuración
+## Instalación Rápida
 
 ### 1. Clonar el repositorio
-
 ```bash
 git clone <tu-repositorio>
 cd prueba-tecnica-fullstack
 ```
 
 ### 2. Instalar dependencias
-
 ```bash
 npm install
 ```
 
 ### 3. Configurar variables de entorno
-
-Crear un archivo `.env.local` en la raíz del proyecto:
-
+Crear archivo `.env.local`:
 ```env
-# Base de datos
+# Base de datos (Supabase)
 DATABASE_URL="postgresql://usuario:password@host:puerto/database"
 
-# Better Auth
-NEXT_PUBLIC_BETTER_AUTH_URL="http://localhost:3000/api/auth"
+# GitHub OAuth
 GITHUB_CLIENT_ID="tu-github-client-id"
 GITHUB_CLIENT_SECRET="tu-github-client-secret"
 
@@ -68,185 +65,290 @@ GITHUB_CLIENT_SECRET="tu-github-client-secret"
 NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 ```
 
-### 4. Configurar GitHub OAuth
-
-1. Ve a [GitHub Developer Settings](https://github.com/settings/developers)
-2. Crea una nueva OAuth App
-3. Configura la URL de callback: `http://localhost:3000/api/auth/callback/github`
-4. Copia el Client ID y Client Secret a tu `.env.local`
-
-### 5. Configurar la base de datos
-
+### 4. Configurar base de datos
 ```bash
-# Generar el cliente de Prisma
+# Generar cliente Prisma
 npx prisma generate
 
-# Ejecutar las migraciones
+# Sincronizar esquema
 npx prisma db push
 
 # Agregar datos de prueba
 npm run db:seed
-
-# (Opcional) Abrir Prisma Studio
-npx prisma studio
 ```
 
-### 6. Ejecutar el proyecto
+### 5. Ejecutar el proyecto
+```bash
+npm run dev
+```
+
+**¡Listo!** Visita `http://localhost:3000`
+
+---
+
+## Configuración Detallada
+
+### Configurar GitHub OAuth
+
+1. Ve a [GitHub Developer Settings](https://github.com/settings/developers)
+2. Crea una nueva **OAuth App**
+3. Configura:
+   - **Homepage URL:** `http://localhost:3000`
+   - **Authorization callback URL:** `http://localhost:3000/api/auth/callback/github`
+4. Copia el **Client ID** y **Client Secret** a tu `.env.local`
+
+### Configurar Supabase (Base de datos)
+
+1. Crea una cuenta en [Supabase](https://supabase.com)
+2. Crea un nuevo proyecto
+3. Ve a **Settings > Database**
+4. Copia la **Connection string** a tu `DATABASE_URL`
+
+### Comandos útiles
 
 ```bash
 # Desarrollo
-npm run dev
+npm run dev              # Servidor de desarrollo
+npm run build           # Build de producción
+npm start              # Servidor de producción
 
-# Producción
-npm run build
-npm start
+# Base de datos
+npx prisma studio      # Interfaz visual de la BD
+npx prisma db push     # Sincronizar esquema
+npx prisma generate    # Regenerar cliente
+
+# Testing
+npm test              # Ejecutar pruebas
+npm run test:watch    # Modo watch
+
+# Datos de prueba
+npm run db:seed       # Agregar datos de ejemplo
 ```
+
+---
+
+## Despliegue en Vercel
+
+### 1. Preparar el proyecto
+```bash
+# Verificar que el build funciona
+npm run build
+```
+
+### 2. Conectar con Vercel
+
+1. Ve a [Vercel](https://vercel.com) y conecta tu repositorio de GitHub
+2. Configura las **variables de entorno** en Vercel:
+   ```
+   DATABASE_URL=tu-url-de-supabase
+   GITHUB_CLIENT_ID=tu-github-client-id
+   GITHUB_CLIENT_SECRET=tu-github-client-secret
+   NEXT_PUBLIC_BASE_URL=https://tu-dominio.vercel.app
+   ```
+
+### 3. Desplegar
+```bash
+# Con Vercel CLI
+npm i -g vercel
+vercel --prod
+
+# O desde GitHub (automático)
+# Solo haz push a main/master
+```
+
+**¡Tu app estará disponible en `https://tu-dominio.vercel.app`!**
+
+---
 
 ## Estructura del Proyecto
 
 ```
 prueba-tecnica-fullstack/
-├── pages/
-│   ├── api/                    # API Routes
-│   │   ├── auth/              # Autenticación
-│   │   ├── transactions/      # CRUD transacciones
-│   │   ├── users/             # CRUD usuarios
-│   │   ├── reports/           # Reportes CSV
-│   │   └── docs.ts            # Documentación API
-│   ├── index.tsx              # Página principal
-│   ├── transactions.tsx       # Gestión transacciones
-│   ├── users.tsx              # Gestión usuarios
-│   ├── reports.tsx            # Reportes
-│   └── api-docs.tsx           # Documentación API
+├── pages/                    # Páginas y API Routes
+│   ├── index.tsx            # Página principal
+│   ├── transactions.tsx     # Gestión de transacciones
+│   ├── users.tsx            # Gestión de usuarios
+│   ├── reports.tsx          # Reportes financieros
+│   └── api/                 # API Endpoints
+│       ├── auth/            # Autenticación
+│       ├── transactions/    # CRUD transacciones
+│       ├── users/           # CRUD usuarios
+│       ├── reports/         # Reportes CSV
+│       └── docs.ts          # Documentación API
 ├── prisma/
-│   └── schema.prisma          # Esquema de base de datos
+│   └── schema.prisma        # Esquema de base de datos
 ├── lib/
-│   └── auth/                  # Configuración Better Auth
-├── __tests__/                 # Pruebas unitarias
-└── components/                # Componentes UI
+│   └── auth/                # Configuración Better Auth
+├── __tests__/               # Pruebas unitarias
+├── components/              # Componentes UI
+└── styles/                  # Estilos globales
 ```
 
-## API Endpoints
-
-### Transacciones
-
-- `GET /api/transactions` - Obtener todas las transacciones
-- `POST /api/transactions` - Crear nueva transacción
-
-### Usuarios
-
-- `GET /api/users` - Obtener todos los usuarios
-- `PUT /api/users/[id]` - Actualizar usuario
-
-### Reportes
-
-- `GET /api/reports/csv` - Descargar reporte CSV
-
-### Documentación
-
-- `GET /api/docs` - Especificación OpenAPI
-- `/api-docs` - Interfaz Swagger UI
+---
 
 ## Roles y Permisos
 
-- **ADMIN:** Acceso completo a todas las funcionalidades
-- **USER:** Solo puede ver transacciones (no implementado en esta versión)
+### ADMIN
+- Crear, editar, eliminar transacciones
+- Gestionar usuarios (crear, editar, eliminar)
+- Ver reportes y gráficos
+- Descargar reportes CSV
+- Acceso a documentación API
 
-## Pruebas
+### USER
+- Ver transacciones
+- No puede crear/editar transacciones
+- No puede gestionar usuarios
+- No puede ver reportes
+- No tiene acceso a documentación API
 
+---
+
+## Testing
+
+### Ejecutar pruebas
 ```bash
-# Ejecutar todas las pruebas
+# Todas las pruebas
 npm test
 
-# Ejecutar pruebas en modo watch
+# Modo watch
 npm run test:watch
+
+# Cobertura
+npm test -- --coverage
 ```
 
-## Despliegue en Vercel
+### Pruebas incluidas
+- **47 pruebas unitarias** ejecutándose
+- Validación de datos
+- Autenticación y autorización
+- Lógica de negocio
+- Utilidades
 
-### 1. Preparar el proyecto
+---
 
+## API Documentation
+
+### Acceso a la documentación
+- **URL:** `/api/docs` (Swagger UI)
+- **Especificación:** OpenAPI 3.0
+- **Testing:** Interactivo desde la interfaz
+
+### Endpoints principales
+
+#### Transacciones
+```
+GET    /api/transactions     # Obtener todas
+POST   /api/transactions     # Crear nueva
+PUT    /api/transactions/[id] # Actualizar
+DELETE /api/transactions/[id] # Eliminar
+```
+
+#### Usuarios
+```
+GET    /api/users            # Obtener todos
+POST   /api/users            # Crear nuevo
+PUT    /api/users/[id]       # Actualizar
+DELETE /api/users            # Eliminar
+```
+
+#### Reportes
+```
+GET    /api/reports/csv      # Descargar CSV
+```
+
+---
+
+## Funcionalidades Destacadas
+
+### Gestión de Transacciones
+- Formulario intuitivo para agregar ingresos/gastos
+- Tabla con filtros y ordenamiento
+- Cálculo automático de balance
+- Botones de editar/eliminar (solo ADMIN)
+
+### Gestión de Usuarios
+- Lista completa de usuarios
+- Crear nuevos usuarios
+- Editar roles y información
+- Protección del usuario de pruebas
+
+### Reportes Financieros
+- Gráficos de ingresos vs gastos
+- Balance actual en tiempo real
+- Exportación a CSV
+- Visualización moderna con Tailwind
+
+### Seguridad
+- Autenticación con GitHub OAuth
+- Control de acceso basado en roles
+- Validación de datos en frontend y backend
+- Middleware de protección de rutas
+
+---
+
+## Estado del Proyecto
+
+### COMPLETADO (100%)
+- Base de datos PostgreSQL configurada
+- Autenticación con GitHub funcionando
+- CRUD completo para transacciones y usuarios
+- Sistema de roles implementado
+- Reportes y gráficos funcionando
+- Documentación API completa
+- Pruebas unitarias (47 tests)
+- Diseño responsive con Tailwind
+- Despliegue en Vercel listo
+
+---
+
+## Solución de Problemas
+
+### Error de base de datos
 ```bash
-# Asegúrate de que el build funcione localmente
+# Regenerar cliente Prisma
+npx prisma generate
+
+# Sincronizar esquema
+npx prisma db push
+```
+
+### Error de autenticación
+- Verificar variables de entorno
+- Confirmar configuración de GitHub OAuth
+- Revisar URLs de callback
+
+### Error de build
+```bash
+# Limpiar cache
+rm -rf .next
 npm run build
 ```
 
-### 2. Configurar en Vercel
+---
 
-1. Conecta tu repositorio de GitHub a Vercel
-2. Configura las variables de entorno en Vercel:
-   - `DATABASE_URL`
-   - `GITHUB_CLIENT_ID`
-   - `GITHUB_CLIENT_SECRET`
-   - `NEXT_PUBLIC_BASE_URL`
+## Soporte
 
-### 3. Desplegar
+- **Issues:** [GitHub Issues](https://github.com/tu-usuario/tu-repo/issues)
+- **Documentación:** `/api/docs` en tu aplicación
+- **Email:** soporte@ejemplo.com
 
-```bash
-# Instalar Vercel CLI
-npm i -g vercel
-
-# Desplegar
-vercel --prod
-```
-
-## Características de Seguridad
-
-- ✅ Control de acceso basado en roles (RBAC)
-- ✅ Autenticación con GitHub OAuth
-- ✅ Validación de datos en API endpoints
-- ✅ Protección de rutas sensibles
-
-## Estado Actual del Proyecto
-
-### ✅ **COMPLETADO (100%)**
-
-- ✅ Base de datos PostgreSQL con Prisma
-- ✅ Todas las páginas y componentes UI
-- ✅ API endpoints para CRUD completo
-- ✅ Documentación OpenAPI/Swagger
-- ✅ Control de roles en frontend y backend
-- ✅ Datos de prueba incluidos
-- ✅ Testing con Jest
-- ✅ Estructura completa del proyecto
-- ✅ **Autenticación real implementada**
-- ✅ **Protección de endpoints activada**
-- ✅ **Middleware de seguridad funcionando**
-
-### 🎯 **Para usar el proyecto:**
-
-1. Configura las variables de entorno
-2. Ejecuta `npx prisma db push`
-3. Ejecuta `npm run db:seed` para datos de prueba
-4. Ejecuta `npm run dev`
-5. Visita `http://localhost:3000`
-
-## Características de Seguridad Implementadas
-
-- ✅ **Control de acceso basado en roles (RBAC)** - Frontend y backend
-- ✅ **Autenticación con GitHub OAuth** - Configurada y funcionando
-- ✅ **Validación de datos** en todos los API endpoints
-- ✅ **Protección de rutas sensibles** - Middleware activo
-- ✅ **Verificación de sesiones** - En todos los endpoints protegidos
-- ✅ **Validación de permisos** - Solo admins pueden acceder a ciertas funciones
-
-## Próximos Pasos (Opcionales)
-
-- [ ] Agregar más pruebas unitarias y de integración
-- [ ] Implementar filtros avanzados en transacciones
-- [ ] Agregar gráficos más sofisticados
-- [ ] Implementar notificaciones en tiempo real
-- [ ] Agregar auditoría de cambios
-- [ ] Implementar rate limiting
-
-## Contribución
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+---
 
 ## Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la **Licencia MIT**. Ver el archivo `LICENSE` para más detalles.
+
+---
+
+## Agradecimientos
+
+- **Next.js** por el framework
+- **Vercel** por el hosting
+- **Supabase** por la base de datos
+- **Tailwind CSS** por los estilos
+- **Better Auth** por la autenticación
+
+---
+
+**¡Si te gusta este proyecto, dale una estrella en GitHub!**
