@@ -9,7 +9,7 @@ export const cors = (req: NextApiRequest, res: NextApiResponse) => {
     'https://*.vercel.app',
   ];
 
-  const origin = req.headers.origin;
+  const { origin } = req.headers;
   const isAllowedOrigin = allowedOrigins.some((allowedOrigin) => {
     if (allowedOrigin.includes('*')) {
       return origin?.includes(allowedOrigin.replace('*', ''));
@@ -41,13 +41,11 @@ export const cors = (req: NextApiRequest, res: NextApiResponse) => {
   return false;
 };
 
-export const withCors = (
-  handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>
-) => {
-  return async (req: NextApiRequest, res: NextApiResponse) => {
+export const withCors =
+  (handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>) =>
+  async (req: NextApiRequest, res: NextApiResponse) => {
     const isPreflight = cors(req, res);
     if (isPreflight) return;
 
     return handler(req, res);
   };
-};

@@ -166,7 +166,10 @@ const handlePut = async (
     ) {
       res.status(404).json({ error: 'Transacción no encontrada' });
     } else {
-      res.status(500).json({ error: 'Error interno del servidor' });
+      res.status(500).json({
+        error:
+          'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+      });
     }
   }
 };
@@ -202,7 +205,10 @@ const handleDelete = async (
     ) {
       res.status(404).json({ error: 'Transacción no encontrada' });
     } else {
-      res.status(500).json({ error: 'Error interno del servidor' });
+      res.status(500).json({
+        error:
+          'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+      });
     }
   }
 };

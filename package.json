@@ -10,7 +10,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "db:seed": "tsx scripts/seed.ts",
-    "db:restart": "tsx scripts/restart-db.ts"
+    "db:restart": "tsx scripts/restart-db.ts",
+    "db:auto-restart": "tsx scripts/auto-restart-db.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.2.1",

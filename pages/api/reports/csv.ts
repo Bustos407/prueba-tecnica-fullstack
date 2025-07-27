@@ -97,7 +97,10 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       res.status(200).send(csvContent);
     } catch {
       // Error generating CSV
-      res.status(500).json({ error: 'Error interno del servidor' });
+      res.status(500).json({
+        error:
+          'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+      });
     }
   } else {
     res.setHeader('Allow', ['GET']);

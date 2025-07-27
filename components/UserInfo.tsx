@@ -17,15 +17,13 @@ export const UserInfo = () => {
     return null;
   }
 
-  const getRoleColor = (role: string) => {
-    return role === 'ADMIN'
+  const getRoleColor = (role: string) =>
+    role === 'ADMIN'
       ? 'bg-green-100 text-green-800 border-green-200'
       : 'bg-blue-100 text-blue-800 border-blue-200';
-  };
 
-  const getRoleLabel = (role: string) => {
-    return role === 'ADMIN' ? 'Administrador' : 'Usuario';
-  };
+  const getRoleLabel = (role: string) =>
+    role === 'ADMIN' ? 'Administrador' : 'Usuario';
 
   const getPermissions = (role: string) => {
     if (role === 'ADMIN') {

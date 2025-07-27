@@ -77,7 +77,10 @@ const handlePut = async (
 
     res.status(200).json(updatedUser);
   } catch {
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(500).json({
+      error:
+        'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+    });
   }
 };
 

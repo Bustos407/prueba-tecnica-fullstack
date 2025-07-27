@@ -13,11 +13,12 @@ export interface AuthenticatedRequest extends NextApiRequest {
   };
 }
 
-export const withAuth = (
-  handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<void>,
-  requiredRole?: 'USER' | 'ADMIN'
-) => {
-  return async (req: AuthenticatedRequest, res: NextApiResponse) => {
+export const withAuth =
+  (
+    handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<void>,
+    requiredRole?: 'USER' | 'ADMIN'
+  ) =>
+  async (req: AuthenticatedRequest, res: NextApiResponse) => {
     try {
       // Verificar si hay una sesión activa usando las cookies
       const hasSessionCookie =
@@ -97,7 +98,7 @@ export const withAuth = (
         return res.status(403).json({
           error: 'Acceso denegado. Rol requerido: ' + requiredRole,
           userRole: user.role,
-          requiredRole: requiredRole,
+          requiredRole,
         });
       }
 
@@ -116,4 +117,3 @@ export const withAuth = (
       return res.status(401).json({ error: 'Error de autenticación' });
     }
   };
-};

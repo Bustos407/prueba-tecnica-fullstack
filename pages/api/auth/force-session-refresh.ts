@@ -31,6 +31,9 @@ export default async function handler(
     });
     res.end();
   } catch {
-    return res.status(500).json({ error: 'Error interno del servidor' });
+    return res.status(500).json({
+      error:
+        'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+    });
   }
 }

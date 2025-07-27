@@ -3,6 +3,7 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useCallback,
   ReactNode,
 } from 'react';
 import { useSession } from './client';
@@ -36,7 +37,7 @@ export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const verifyAndSetRole = async () => {
+  const verifyAndSetRole = useCallback(async () => {
     // Si no hay sesión de Better Auth, verificar si hay sesión de prueba
     if (!session?.user) {
       try {
@@ -80,7 +81,7 @@ export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [session]);
 
   const refreshRole = async () => {
     setIsLoading(true);
@@ -89,7 +90,7 @@ export const UserRoleProvider: React.FC<UserRoleProviderProps> = ({
 
   useEffect(() => {
     verifyAndSetRole();
-  }, [session]);
+  }, [session, verifyAndSetRole]);
 
   const value = {
     userRole,

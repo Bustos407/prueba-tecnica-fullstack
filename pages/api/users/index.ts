@@ -62,7 +62,10 @@ const handlePost = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     res.status(201).json(newUser);
   } catch {
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(500).json({
+      error:
+        'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+    });
   }
 };
 
@@ -106,7 +109,10 @@ const handleDelete = async (
       deletedUser: { id: userToDelete.id, email: userToDelete.email },
     });
   } catch {
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(500).json({
+      error:
+        'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+    });
   }
 };
 
@@ -246,7 +252,10 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       res.status(200).json(users);
     } catch {
       // Error fetching users
-      res.status(500).json({ error: 'Error interno del servidor' });
+      res.status(500).json({
+        error:
+          'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+      });
     }
   } else if (req.method === 'POST') {
     await handlePost(req, res);

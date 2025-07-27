@@ -8,14 +8,14 @@ import { useUserRole } from './UserRoleContext';
 export const withAuth = (
   Component: React.ComponentType<Record<string, unknown>>,
   requiredRole?: 'USER' | 'ADMIN'
-) => {
-  return function AuthenticatedComponent(props: Record<string, unknown>) {
+) =>
+  function AuthenticatedComponent(props: Record<string, unknown>) {
     const router = useRouter();
     const { data: session, isPending } = useSession();
     const { userRole, isLoading: roleLoading } = useUserRole();
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [hasChecked, setHasChecked] = useState(false);
-    const [testSession, setTestSession] = useState<unknown>(null);
+    const [, setTestSession] = useState<unknown>(null);
 
     useEffect(() => {
       const checkAuth = async () => {
@@ -64,15 +64,7 @@ export const withAuth = (
       };
 
       checkAuth();
-    }, [
-      session,
-      isPending,
-      router,
-      requiredRole,
-      hasChecked,
-      userRole,
-      roleLoading,
-    ]);
+    }, [session, isPending, router, hasChecked, userRole, roleLoading]);
 
     if (isPending || roleLoading) {
       return (
@@ -98,4 +90,3 @@ export const withAuth = (
 
     return <Component {...props} />;
   };
-};

@@ -89,7 +89,10 @@ const handleGet = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     res.status(200).json(transactions);
   } catch {
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(500).json({
+      error:
+        'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+    });
   }
 };
 
@@ -151,7 +154,10 @@ const handlePost = async (
 
     res.status(201).json(transaction);
   } catch {
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(500).json({
+      error:
+        'Error interno del servidor - Haciendo reset de la BD (posible caída de Supabase) - Puede tardar unos minutos',
+    });
   }
 };
 
